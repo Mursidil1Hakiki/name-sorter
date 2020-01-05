@@ -6,6 +6,8 @@ let showdata = document.querySelector('#txtBfrSorting') ;
 let showdatasorted = document.querySelector('#txtAftSorting')
 let btnsorting = document.querySelector('#btnSort');
 let btndownload = document.querySelector('#btndownload');
+let groupName;
+let stringGroupName ="";
 
 input.addEventListener('change',function(e){
     console.log("isi file=>", input.files);
@@ -33,10 +35,7 @@ input.addEventListener('change',function(e){
                 firstName: firstname,
                 lastName : lastname 
             });
-            
-            
         });
-        
         console.log("isi obj", obj);       
         
     }
@@ -69,29 +68,33 @@ btnsorting.addEventListener('click', function(e){
             return 0
         }
     });
-
+    
     sorterdatas.forEach(element =>{
-        let grouName = element.firstName + element.lastName +"\n";
-        datasorted.push(grouName);
+        groupName = element.firstName + element.lastName +"\n";
+        datasorted.push(groupName);
     });
     console.log("datasorted==>", datasorted);
-    showdatasorted.innerHTML = datasorted;
+
+    datasorted.forEach(dataarray => {
+        console.log("cek dataarray-->", dataarray);
+        stringGroupName += dataarray;
+    })
+    console.log("groupName =>...",stringGroupName);
+    showdatasorted.innerHTML = stringGroupName;
 },false)
 
 
 btndownload.addEventListener('click', function(ei){  
-    let datadownload = datasorted;
-        
+    let datadownload = stringGroupName;
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,'
+            + encodeURIComponent(datadownload));
+    element.setAttribute('download', "sorted-names-list.txt");
 
-        var element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,'
-                + encodeURIComponent(datadownload));
-        element.setAttribute('download', "sorted-names-list.txt");
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
 
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-
-        document.body.removeChild(element);
+    document.body.removeChild(element);
 },false)
 
