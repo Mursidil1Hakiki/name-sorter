@@ -1,7 +1,7 @@
 
 let input = document.querySelector('input');
 let obj=[];
-let datasorted=[];
+let sorterdatas=[];
 let showdata = document.querySelector('#txtBfrSorting') ;
 let showdatasorted = document.querySelector('#txtAftSorting')
 let btnsorting = document.querySelector('#btnSort');
@@ -10,15 +10,14 @@ let groupName;
 let stringGroupName ="";
 
 input.addEventListener('change',function(e){
-    console.log("isi file=>", input.files);
     let reader = new FileReader();
+    let inputblob = new Blob(input.files);
+    reader.readAsText(inputblob);
     reader.onload = function(){
-        console.log("isi line", reader.result);
         showdata.innerHTML = reader.result;
         let line = reader.result.split('\n');        
         line.forEach(element => {
             let dataelement = element.split(/\W+/).filter(word => word.length > 0);
-            console.log("isi element =>",dataelement);
             let firstname ="";
             let lastname="";
             for(let i = 0; i < dataelement.length; i++){
@@ -29,57 +28,46 @@ input.addEventListener('change',function(e){
                     lastname = dataelement[i];
                 }
             }
-            console.log("cek firstname=>", firstname );
-                console.log("cek latname=>", lastname );
             obj.push({
                 firstName: firstname,
                 lastName : lastname 
             });
-        });
-        console.log("isi obj", obj);       
-        
+        });        
     }
-    reader.readAsText(input.files[0]);
-},false)
+},false);
 
-btnsorting.addEventListener('click', function(e){   
-    console.log("cek obj ---->", obj);
-    let sorterdatas = obj.sort(function (a,b){
-        
+function sorter(objSorter){
+    sorterdatas = objSorter.sort(function (a,b){        
         if(a.lastName.toLowerCase() < b.lastName.toLowerCase()){
-            console.log("cek LastName<<<",a.lastName.toLowerCase(),b.lastName.toLowerCase());
             return -1
         }
         if(a.lastName.toLowerCase() > b.lastName.toLowerCase()){
-            console.log("cek LastName >>>",a.lastName.toLowerCase(),b.lastName.toLowerCase() );
             return 1
-        }
-        
+        }        
         if(a.lastName.toLowerCase() == b.lastName.toLowerCase()){
-            console.log("cek LastName ==>",a.lastName.toLowerCase(),b.lastName.toLowerCase());
             if(a.firstName.toLowerCase() < b.firstName.toLowerCase()){
-                console.log("cek LastName<<<",a.firstName.toLowerCase(),b.firstName.toLowerCase());
                 return -1
             }
             if(a.firstName.toLowerCase() > b.firstName.toLowerCase()){
-                console.log("cek LastName >>>",a.firstName.toLowerCase(),b.firstName.toLowerCase() );
                 return 1
             }
             return 0
         }
     });
-    
+}
+
+btnsorting.addEventListener('click', function(e){   
+    var datasorted =[];
+    sorter(obj);    
     sorterdatas.forEach(element =>{
         groupName = element.firstName + element.lastName +"\n";
         datasorted.push(groupName);
     });
-    console.log("datasorted==>", datasorted);
 
     datasorted.forEach(dataarray => {
         console.log("cek dataarray-->", dataarray);
         stringGroupName += dataarray;
     })
-    console.log("groupName =>...",stringGroupName);
     showdatasorted.innerHTML = stringGroupName;
 },false)
 
